@@ -6,28 +6,28 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.loguito.clase6.R
-import com.loguito.clase6.views.network.models.Character
+import com.loguito.clase6.views.network.models.MarvelCharacter
 import kotlinx.android.synthetic.main.marvel_character_cell.view.*
 
-class MarvelListAdapter(val clickListener: (Character) -> Unit) : RecyclerView.Adapter<MarvelListAdapter.MarvelCharacterViewHolder>() {
+class MarvelListAdapter(val clickListener: (MarvelCharacter) -> Unit) : RecyclerView.Adapter<MarvelListAdapter.MarvelCharacterViewHolder>() {
 
-    var characterList: List<Character> = emptyList()
+    var marvelCharacterList: List<MarvelCharacter> = emptyList()
         set(value) {
             field = value
             notifyDataSetChanged()
         }
 
     inner class MarvelCharacterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(character: Character) {
-            itemView.nameTextView.text = character.name
-            itemView.descriptionTextView.text = character.description
-            val formattedUrl = "${character.thumbnail.path}.${character.thumbnail.extension}".replace("http","https")
+        fun bind(marvelCharacter: MarvelCharacter) {
+            itemView.nameTextView.text = marvelCharacter.name
+            itemView.descriptionTextView.text = marvelCharacter.description
+            val formattedUrl = "${marvelCharacter.thumbnail.path}.${marvelCharacter.thumbnail.extension}".replace("http","https")
             Glide.with(itemView.context)
                 .load(formattedUrl)
                 .circleCrop()
                 .into(itemView.characterImageView)
             itemView.setOnClickListener {
-                clickListener.invoke(character)
+                clickListener.invoke(marvelCharacter)
             }
         }
     }
@@ -39,8 +39,8 @@ class MarvelListAdapter(val clickListener: (Character) -> Unit) : RecyclerView.A
     }
 
     override fun onBindViewHolder(holder: MarvelCharacterViewHolder, position: Int) {
-        holder.bind(characterList[position])
+        holder.bind(marvelCharacterList[position])
     }
 
-    override fun getItemCount() = characterList.size
+    override fun getItemCount() = marvelCharacterList.size
 }

@@ -26,7 +26,7 @@
         android:layout_marginBottom="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
         app:layout_constraintBottom_toTopOf="@+id/descriptionTextView"
-        app:layout_constraintEnd_toStartOf="@+id/nextArrow"
+        app:layout_constraintEnd_toStartOf="@+id/favorite"
         app:layout_constraintStart_toEndOf="@+id/characterImageView"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
@@ -46,6 +46,16 @@
         app:layout_constraintStart_toStartOf="@+id/nameTextView"
         app:layout_constraintTop_toBottomOf="@+id/nameTextView"
         tools:text="Descripcion" />
+
+    <ImageView
+        android:id="@+id/favorite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@drawable/ic_baseline_star_border_24"
+        app:layout_constraintEnd_toStartOf="@+id/nextArrow" />
 
     <ImageView
         android:id="@+id/nextArrow"

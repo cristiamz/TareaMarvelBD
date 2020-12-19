@@ -1,7 +1,6 @@
 package com.loguito.clase6.views.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,7 +36,7 @@ class MarvelListFragment : Fragment() {
         characterRecyclerView.addItemDecoration(DividerItemDecoration(requireContext(), VERTICAL))
 
         viewModel.getCharacterListResponse().observe(viewLifecycleOwner) { characterList ->
-            adapter.characterList = characterList
+            adapter.marvelCharacterList = characterList
             characterRecyclerView.visibility = View.VISIBLE
         }
 

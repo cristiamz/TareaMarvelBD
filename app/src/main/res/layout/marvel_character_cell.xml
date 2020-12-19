@@ -54,7 +54,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/ic_baseline_star_border_24"
+        android:src="@drawable/ic_baseline_star_rate_24"
         app:layout_constraintEnd_toStartOf="@+id/nextArrow" />
 
     <ImageView

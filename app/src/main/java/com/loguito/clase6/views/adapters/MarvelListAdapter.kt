@@ -6,10 +6,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.loguito.clase6.R
-import com.loguito.clase6.views.network.models.MarvelCharacter
+import com.loguito.clase6.views.db.MarvelCharacter
 import kotlinx.android.synthetic.main.marvel_character_cell.view.*
 
-class MarvelListAdapter(val clickListener: (MarvelCharacter) -> Unit) : RecyclerView.Adapter<MarvelListAdapter.MarvelCharacterViewHolder>() {
+class MarvelListAdapter(val clickListener: (MarvelCharacter) -> Unit) :
+    RecyclerView.Adapter<MarvelListAdapter.MarvelCharacterViewHolder>() {
 
     var marvelCharacterList: List<MarvelCharacter> = emptyList()
         set(value) {
@@ -19,13 +20,20 @@ class MarvelListAdapter(val clickListener: (MarvelCharacter) -> Unit) : Recycler
 
     inner class MarvelCharacterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(marvelCharacter: MarvelCharacter) {
+
+            if (marvelCharacter.isFavorite)
+                itemView.favorite.setImageResource(R.drawable.ic_baseline_star_rate_24)
+            else
+                itemView.favorite.setImageResource(R.drawable.ic_baseline_star_border_24)
+
+
             itemView.nameTextView.text = marvelCharacter.name
             itemView.descriptionTextView.text = marvelCharacter.description
-            val formattedUrl = "${marvelCharacter.thumbnail.path}.${marvelCharacter.thumbnail.extension}".replace("http","https")
             Glide.with(itemView.context)
-                .load(formattedUrl)
+                .load(marvelCharacter.thumbnail)
                 .circleCrop()
                 .into(itemView.characterImageView)
+
             itemView.setOnClickListener {
                 clickListener.invoke(marvelCharacter)
             }

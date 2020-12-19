@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import com.google.android.material.snackbar.Snackbar
@@ -16,9 +15,12 @@ import com.loguito.clase6.views.viewmodels.MarvelListViewModel
 import kotlinx.android.synthetic.main.fragment_marvel_list.*
 
 class MarvelListFragment : Fragment() {
+
     private val viewModel: MarvelListViewModel by viewModels()
     private val adapter = MarvelListAdapter {character ->
-        findNavController().navigate(R.id.action_marvelListFragment_to_bottomMenuFragment)
+
+        viewModel.saveFavorite(character)
+        //findNavController().navigate(R.id.action_marvelListFragment_to_bottomMenuFragment)
     }
 
     override fun onCreateView(

@@ -2,17 +2,23 @@ package com.loguito.clase6.views.db
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.loguito.clase6.views.network.models.MarvelCharacter
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CharacterDAO {
 
-    @Insert
-    suspend fun insert(marvelCharacterFavorite: MarvelCharacterFavorite)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(marvelCharacter: MarvelCharacter)
 
-    @Query("SELECT * FROM marvelCharacterFavorite")
-    fun getAllCharacters() : Flow<List<MarvelCharacterFavorite>>
+    @Insert //(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(marvelCharacterList: List<MarvelCharacter>);
+
+    @Query("SELECT * FROM marvelCharacter")
+    fun getAllCharacters() : Flow<List<MarvelCharacter>>
+
+    @Query("SELECT * from marvelCharacter WHERE id= :id")
+    fun getMarvelCharacterById(id: Int): Flow<List<MarvelCharacter?>?>
 
 }

@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = arrayOf(MarvelCharacterFavorite::class), version = 1, exportSchema = false)
+@Database(entities = arrayOf(MarvelCharacter::class), version = 1, exportSchema = false)
 public abstract class CharacterDatabase : RoomDatabase() {
     abstract fun characterDao() : CharacterDAO
 

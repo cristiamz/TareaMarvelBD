@@ -1,14 +1,10 @@
 package com.loguito.clase6.views.viewmodels
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.loguito.clase6.views.db.CharacterDatabase
-import com.loguito.clase6.views.db.MarvelCharacterFavorite
+import com.loguito.clase6.views.db.MarvelCharacter
 import com.loguito.clase6.views.network.RetrofitProvider
-import com.loguito.clase6.views.network.models.MarvelCharacter
 import com.loguito.clase6.views.network.models.CharacterResponse
 import com.loguito.clase6.views.repository.CharacterRepository
 import kotlinx.coroutines.launch
@@ -31,12 +27,14 @@ class MarvelListViewModel(application: Application) : AndroidViewModel(applicati
     private val hash: String = "72e5ed53d1398abb831c3ceec263f18b"
     private val timestamp: String = "thesoer"
 
-    private val marvelCharacterListResponse: MutableLiveData<List<MarvelCharacter>> = MutableLiveData()
+    private val marvelCharacterListResponse: MutableLiveData<List<MarvelCharacter>> =
+        MutableLiveData()
     private val isMakingRequest: MutableLiveData<Boolean> = MutableLiveData()
     private val isError: MutableLiveData<Boolean> = MutableLiveData()
 
+    //fun getCharacterListResponse(): LiveData<List<MarvelCharacter>> = repository.allCharacters.asLiveData()
     fun getCharacterListResponse(): LiveData<List<MarvelCharacter>> {
-        return marvelCharacterListResponse
+        return repository.allCharacters.asLiveData()
     }
 
     fun getIsLoading(): LiveData<Boolean> {
@@ -59,7 +57,35 @@ class MarvelListViewModel(application: Application) : AndroidViewModel(applicati
                     isMakingRequest.postValue(false)
                     if (response.isSuccessful) {
                         response.body()?.let { unwrappedResponse ->
-                            marvelCharacterListResponse.postValue(unwrappedResponse.data.results)
+
+                            val newCharacters: MutableList<MarvelCharacter> =
+                                emptyList<MarvelCharacter>().toMutableList()
+
+                            unwrappedResponse.data.results.forEach { character ->
+
+                                viewModelScope.launch {
+                                    val charactersOnDB = repository.getMarvelCharacterById(character.id).asLiveData()
+                                    if (charactersOnDB.value?.isEmpty() == true){
+                                        newCharacters.add(
+                                            MarvelCharacter(
+                                                character.id,
+                                                character.name,
+                                                character.description,
+                                                "${character.thumbnail.path}.${character.thumbnail.extension}".replace(
+                                                    "http",
+                                                    "https"
+                                                ),
+                                                false
+                                            )
+                                        )
+                                    }
+                                }
+                            }
+
+                            viewModelScope.launch {
+                                repository.insertAll(newCharacters)
+                            }
+//                            marvelCharacterListResponse.postValue(unwrappedResponse.data.results)
                         }
                     } else {
                         isError.postValue(true)
@@ -73,9 +99,15 @@ class MarvelListViewModel(application: Application) : AndroidViewModel(applicati
             })
     }
 
-    fun insertCharacter (marvelCharacter: MarvelCharacter, isFavorite: Boolean){
+    fun saveFavorite(marvelCharacter: MarvelCharacter) {
         viewModelScope.launch {
-            val newCharacter = MarvelCharacterFavorite(marvelCharacter.id, isFavorite)
+            val newCharacter = MarvelCharacter(
+                marvelCharacter.id,
+                marvelCharacter.name,
+                marvelCharacter.description,
+                marvelCharacter.thumbnail,
+                !marvelCharacter.isFavorite
+            )
             repository.insert(newCharacter)
         }
     }
